@@ -5,6 +5,9 @@
  */
 package taskitem;
 
+import persistence.engine.FileBasedDataStore;
+import persistence.engine.PersistenceEngine;
+
 /**
  *
  * @author root
@@ -16,6 +19,12 @@ public class DefaultTaskItem implements TaskItem {
     private String description = "";
     
     private String status = "";
+    
+    private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
+
+    public DefaultTaskItem() {
+        this.status = pEngine.getDefaultStatusName();
+    }
 
     @Override
     public String getCategory() {

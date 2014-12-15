@@ -9,13 +9,13 @@ package office.desktop;
  *
  * @author root
  */
-public class OfficeDesktop {
-
+class OfficeDesktop {
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        System.out.println("اب بند کرو");
+    public static void main(String... args){
+        
     }
     
 }
