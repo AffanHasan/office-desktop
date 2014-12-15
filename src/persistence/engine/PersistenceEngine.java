@@ -16,4 +16,9 @@ public interface PersistenceEngine {
      * @return The string name of default status
      */
     String getDefaultStatusName();
+    
+    /**
+     * @return A String array of status names
+     */
+    String[] getStatusNames();
 }

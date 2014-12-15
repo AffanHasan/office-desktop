@@ -16,6 +16,20 @@ public class FileBasedDataStore implements PersistenceEngine {
     private FileBasedDataStore(){
     }
     
+//    private enum STATUS_LIST{
+//        PENDING,
+//        IN_PROGRESS,
+//        DONE,
+//        DISCARDED
+//    }
+    
+    private final String[] statusNames = {"PENDING", "IN PROGRESS", "DONE", "DISCARDED"};
+
+    @Override
+    public String[] getStatusNames() {
+        return statusNames;
+    }
+    
     private static class Holder{
         private static final FileBasedDataStore holder = new FileBasedDataStore();
     }
@@ -30,7 +44,7 @@ public class FileBasedDataStore implements PersistenceEngine {
     
     @Override
     public String getDefaultStatusName() {
-        return "PENDING";
+        return statusNames[0];
     }
     
 }

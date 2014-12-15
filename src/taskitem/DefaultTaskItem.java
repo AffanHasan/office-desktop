@@ -53,7 +53,13 @@ public class DefaultTaskItem implements TaskItem {
 
     @Override
     public void setStatus(String status) {
-        this.status = status;
+        for(String statusString : FileBasedDataStore.getInstance().getStatusNames()){
+            if(statusString.equals(status)){
+                this.status = status;
+                return;
+            }
+        }
+        throw new IllegalArgumentException();
     }
     
 }
