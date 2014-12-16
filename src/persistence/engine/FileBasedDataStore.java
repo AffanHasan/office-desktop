@@ -16,18 +16,31 @@ public class FileBasedDataStore implements PersistenceEngine {
     private FileBasedDataStore(){
     }
     
-//    private enum STATUS_LIST{
-//        PENDING,
-//        IN_PROGRESS,
-//        DONE,
-//        DISCARDED
-//    }
+    private enum STATUS_LIST{
+        
+        PENDING ("PENDING"),
+        IN_PROGRESS ("IN PROGRESS"),
+        DONE ("DONE"),
+        DISCARDED ("DISCARDED");
+        
+        private final String statusName;
+        
+        STATUS_LIST(String status){
+            this.statusName = status;
+        }
+        
+        String getStatusName(){
+            return this.statusName;
+        }
+    }
     
-    private final String[] statusNames = {"PENDING", "IN PROGRESS", "DONE", "DISCARDED"};
-
     @Override
     public String[] getStatusNames() {
-        return statusNames;
+        String[] list = new String[STATUS_LIST.values().length];
+        for( int i=0; i < STATUS_LIST.values().length; i++ ){
+            list[i] = STATUS_LIST.values()[i].getStatusName();
+        }
+        return list;
     }
     
     private static class Holder{
@@ -44,7 +57,7 @@ public class FileBasedDataStore implements PersistenceEngine {
     
     @Override
     public String getDefaultStatusName() {
-        return statusNames[0];
+        return STATUS_LIST.values()[0].getStatusName();
     }
     
 }
