@@ -20,6 +20,8 @@ public class DefaultTaskItem implements TaskItem {
     
     private String status = "";
     
+    private byte orderNumber;
+    
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
 
     public DefaultTaskItem() {
@@ -60,6 +62,19 @@ public class DefaultTaskItem implements TaskItem {
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    @Override
+    public byte getOrderNumber() {
+        return orderNumber;
+    }
+
+    @Override
+    public void setOrderNumber(byte orderNo) {
+        if(orderNo < 0){
+            throw new IllegalArgumentException("Order Number Must Not Be Negative");
+        }
+        this.orderNumber = orderNo;
     }
     
 }

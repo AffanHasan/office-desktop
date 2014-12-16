@@ -67,4 +67,9 @@ public class TaskItem_new_object {
         assertTrue(taskItem.getStatus().equals("PENDING"));
     }
     
+    @Test
+    public void must_have_an_order_number() {
+        assertNotNull(taskItem.getOrderNumber());
+    }
+    
 }

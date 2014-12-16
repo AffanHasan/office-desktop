@@ -7,7 +7,7 @@ package taskitem;
 
 /**
  * Represents a TaskItem
- * @author root
+ * @author Affan Hasan
  */
 public interface TaskItem {
     
@@ -22,4 +22,8 @@ public interface TaskItem {
     String getDescription();
     
     void setDescription(String description);
+    
+    byte getOrderNumber();
+    
+    void setOrderNumber(byte orderNo);
 }

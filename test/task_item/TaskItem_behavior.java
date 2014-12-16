@@ -13,6 +13,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import persistence.engine.FileBasedDataStore;
+import persistence.engine.PersistenceEngine;
 import taskitem.DefaultTaskItem;
 import taskitem.TaskItem;
 
@@ -26,6 +28,8 @@ public class TaskItem_behavior {
     private final String category = "Personalized Menus";
     private final String description = "Some task";
     private final String status = null;
+    
+    private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
     
     public TaskItem_behavior() {
     }
@@ -101,9 +105,26 @@ public class TaskItem_behavior {
         }
     }
     
-    private List<String> getStatusListFromDB(){
-        final String[] statusList = { "PENDING", "IN PROGRESS", "DONE", "DISCARDED" };
-        return Arrays.asList(statusList);
+    private String[] getStatusListFromDB(){
+        return pEngine.getStatusNames();
+    }
+    
+    @Test
+    public void must_accept_a_byte_as_order_number(){
+        byte number = 1;
+        taskItem.setOrderNumber(number);
+        assertEquals(this.taskItem.getOrderNumber(), number);
+    }
+    
+    @Test
+    public void must_not_accept_a_negative_byte_value_as_order_number(){
+        byte number = 127;
+        try{
+            taskItem.setOrderNumber(number);        
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        fail();
     }
     
 }
