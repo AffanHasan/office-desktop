@@ -69,7 +69,7 @@ public class DayItem_Behavior {
     }
     
     @Test
-    public void adding_a_task_item_at_higher_index_should_through_indexoutofbound_exception(){
+    public void adding_a_task_item_at_invalid_index_should_through__exception(){
         try{
             for(int index = 0; index < 4; index++){
                 taskItem = new DefaultTaskItem();
@@ -79,7 +79,7 @@ public class DayItem_Behavior {
             int size = dayItem.getTasks().size();
             taskItem = new DefaultTaskItem();
             dayItem.addTask(taskItem, 8);
-        }catch(IndexOutOfBoundsException e){
+        }catch(Exception e){
             return ;
         }
         fail();
@@ -104,6 +104,15 @@ public class DayItem_Behavior {
     }
     
     @Test
+    public void remove_task_item_by_order_number_must_maintain_correct_ordering(){
+        dayItem.addTask(taskItem);
+        int size = dayItem.getTasks().size();
+        byte orderNo = 0;
+        dayItem.removeTask(orderNo);
+        fail();
+    }
+    
+    @Test
     public void remove_task_item_by_order_number_illegal_argument_exception_when_no_is_negative(){
         try{
             dayItem.addTask(taskItem);
@@ -114,5 +123,34 @@ public class DayItem_Behavior {
             return;
         }
         fail();
+    }
+    
+    @Test
+    public void reordering_a_task(){
+        for(int index = 0; index < 4; index++){
+            taskItem = new DefaultTaskItem();
+            dayItem.addTask(taskItem);
+            assertTrue(dayItem.getTasks().get(index).getOrderNumber() == index);
+        }
+        taskItem = new DefaultTaskItem();
+        String description = "reordering_a_task";
+        taskItem.setDescription(description);
+        dayItem.reorderTaskItem(taskItem, 0);
+        assertTrue(dayItem.getTasks().get(0).getDescription().equals("reordering_a_task"));
+    }
+    
+    @Test
+    public void reordering_a_task_must_maintain_correct_ordering(){
+        for(int index = 0; index < 4; index++){
+            taskItem = new DefaultTaskItem();
+            dayItem.addTask(taskItem);
+        }
+        taskItem = new DefaultTaskItem();
+        String description = "reordering_a_task";
+        taskItem.setDescription(description);
+        dayItem.reorderTaskItem(taskItem, 0);
+        for(int index = 0; index < 4; index++){
+            assertTrue(dayItem.getTasks().get(index).getOrderNumber() == index);
+        }
     }
 }

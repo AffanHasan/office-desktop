@@ -75,5 +75,11 @@ public class DefaultDayItem implements DayItem {
         else
             throw new IllegalArgumentException("orderNo must not be smaller than 0");
     }
+
+    @Override
+    public void reorderTaskItem(TaskItem task, int index) {
+        removeTask(task.getOrderNumber());
+        addTask(task, index);
+    }
     
 }
