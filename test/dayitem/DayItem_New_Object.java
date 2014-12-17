@@ -5,8 +5,11 @@
  */
 package dayitem;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -21,6 +24,8 @@ import org.testng.annotations.Test;
 public class DayItem_New_Object {
     
     private final DayItem dayItem = new DefaultDayItem();
+    
+    private final SimpleDateFormat standardDateFormat = new SimpleDateFormat("EEE, MMM dd yyyy");
     
     public DayItem_New_Object() {
     }
@@ -67,9 +72,24 @@ public class DayItem_New_Object {
      */
     @Test
     public void must_return_date_in_standard_string_format(){
-        SimpleDateFormat standardDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
         String currentDate = standardDateFormat.format(new Date(System.currentTimeMillis()));
         String objectDate = dayItem.getStandardDate();
         assertEquals(objectDate, currentDate);
+    }
+    
+    @Test
+    public void should_be_able_to_create_object_with_a_particular_date_passed_as_standard_format_string(){
+        try {
+            String date = "Tue, Dec 16 2014";
+            DayItem day = new DefaultDayItem(date);
+            assertEquals(date, day.getStandardDate());
+        } catch (ParseException ex) {
+            fail();
+        }
+    }
+    
+    @Test
+    public void must_contain_an_empty_TaskItem_list_by_default(){
+        
     }
 }

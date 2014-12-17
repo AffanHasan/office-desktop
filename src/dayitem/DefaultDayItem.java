@@ -5,6 +5,7 @@
  */
 package dayitem;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,9 +15,21 @@ import java.util.Date;
  */
 public class DefaultDayItem implements DayItem {
     
-    private final long date = System.currentTimeMillis();
+    private final long date;
     
-    private final String standardDatePattern = "EEE, MMM dd, yyyy";
+    private final SimpleDateFormat standardDateFormat = new SimpleDateFormat("EEE, MMM dd yyyy");
+
+    public DefaultDayItem() {
+         date = System.currentTimeMillis();
+    }
+
+    /**
+     * Standard date format is: <b>Thu, Dec 18 2014</b>
+     * @param standardDate 
+     */
+    public DefaultDayItem(String standardDate) throws ParseException {
+        date = standardDateFormat.parse(standardDate).getTime();
+    }
 
     @Override
     public long getDateAsLong() {
@@ -25,8 +38,7 @@ public class DefaultDayItem implements DayItem {
 
     @Override
     public String getStandardDate() {
-        return new SimpleDateFormat(standardDatePattern).
-                format(new Date(date));
+        return standardDateFormat.format(new Date(date));
     }
     
 }
