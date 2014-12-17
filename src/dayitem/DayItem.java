@@ -5,6 +5,9 @@
  */
 package dayitem;
 
+import java.util.List;
+import taskitem.TaskItem;
+
 /**
  *
  * @author Affan Hasan
@@ -18,4 +21,12 @@ public interface DayItem {
      * @return 
      */
     String getStandardDate();
+    
+    List<TaskItem> getTasks();
+    
+    void addTask(TaskItem task);
+    
+    void addTask(TaskItem task, int index);
+    
+    void removeTask(int orderNo);
 }

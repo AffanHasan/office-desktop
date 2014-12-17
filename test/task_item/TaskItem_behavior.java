@@ -120,7 +120,7 @@ public class TaskItem_behavior {
     public void must_not_accept_a_negative_byte_value_as_order_number(){
         byte number = -1;
         try{
-            taskItem.setOrderNumber(number);        
+            taskItem.setOrderNumber(number);
         }catch(IllegalArgumentException e){
             return;
         }

@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author root
+ * @author Affan Hasan
  */
 public class DayItem_New_Object {
     
@@ -89,7 +89,19 @@ public class DayItem_New_Object {
     }
     
     @Test
-    public void must_contain_an_empty_TaskItem_list_by_default(){
-        
+    public void must_throw_parse_exception_when_creating_an_object_with_incorrect_standard_format_string(){
+        try {
+            String date = "Wed, Dec 17, 2014";//Wrong format
+            DayItem day = new DefaultDayItem(date);
+        } catch (ParseException ex) {
+            return;
+        }
+        fail();
     }
+    
+    @Test
+    public void must_contain_an_empty_TaskItem_list_by_default(){
+        assertTrue(dayItem.getTasks().isEmpty());
+    }
+    
 }

@@ -23,7 +23,7 @@ public interface TaskItem {
     
     void setDescription(String description);
     
-    byte getOrderNumber();
+    int getOrderNumber();
     
-    void setOrderNumber(byte orderNo);
+    void setOrderNumber(int orderNo);
 }
