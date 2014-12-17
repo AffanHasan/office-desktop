@@ -5,6 +5,7 @@
  */
 package dayitem;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -14,10 +15,18 @@ import java.util.Date;
 public class DefaultDayItem implements DayItem {
     
     private final long date = System.currentTimeMillis();
+    
+    private final String standardDatePattern = "EEE, MMM dd, yyyy";
 
     @Override
     public long getDateAsLong() {
         return date;
+    }
+
+    @Override
+    public String getStandardDate() {
+        return new SimpleDateFormat(standardDatePattern).
+                format(new Date(date));
     }
     
 }

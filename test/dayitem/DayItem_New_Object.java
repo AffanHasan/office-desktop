@@ -43,10 +43,13 @@ public class DayItem_New_Object {
     
     @Test
     public void dayItem_must_have_date_as_milliseconds_long(){
-        long date = dayItem.getDateAsLong();
         try{
+            long date = dayItem.getDateAsLong();
             new Date(date);
-        }catch(Exception e){
+        }catch(NullPointerException e ){
+            fail();
+        }
+        catch(Exception e){
             fail();
         }
     }
@@ -57,5 +60,16 @@ public class DayItem_New_Object {
         Date objectDate = new Date(dayItem.getDateAsLong());
         SimpleDateFormat sdf = new SimpleDateFormat();
         assertEquals(sdf.format(objectDate), sdf.format(currentDate));
+    }
+    
+    /**
+     * Standard string format for Date is : <b>Wed, Dec 17 2014</b>
+     */
+    @Test
+    public void must_return_date_in_standard_string_format(){
+        SimpleDateFormat standardDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy");
+        String currentDate = standardDateFormat.format(new Date(System.currentTimeMillis()));
+        String objectDate = dayItem.getStandardDate();
+        assertEquals(objectDate, currentDate);
     }
 }

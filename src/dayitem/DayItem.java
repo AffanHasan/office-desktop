@@ -7,9 +7,15 @@ package dayitem;
 
 /**
  *
- * @author root
+ * @author Affan Hasan
  */
 public interface DayItem {
         
     long getDateAsLong();
+    
+    /**
+     * Standard string format for Date is for example : <b>Wed, Dec 17 2014</b>
+     * @return 
+     */
+    String getStandardDate();
 }
