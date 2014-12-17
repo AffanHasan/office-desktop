@@ -5,6 +5,8 @@
  */
 package dayitem;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -18,9 +20,10 @@ import org.testng.annotations.Test;
  */
 public class DayItem_New_Object {
     
+    private final DayItem dayItem = new DefaultDayItem();
+    
     public DayItem_New_Object() {
     }
-
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -39,7 +42,20 @@ public class DayItem_New_Object {
     }
     
     @Test
-    public void dayItem_must_have_date(){
-        fail();
+    public void dayItem_must_have_date_as_milliseconds_long(){
+        long date = dayItem.getDateAsLong();
+        try{
+            new Date(date);
+        }catch(Exception e){
+            fail();
+        }
+    }
+    
+    @Test
+    public void date_must_be_equal_to_current_system_date(){
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date objectDate = new Date(dayItem.getDateAsLong());
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        assertEquals(sdf.format(objectDate), sdf.format(currentDate));
     }
 }
