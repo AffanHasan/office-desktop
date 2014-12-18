@@ -28,6 +28,8 @@ public interface DayItem {
     
     void addTask(TaskItem task, int index);
     
+    void replaceTask(TaskItem task, int index);
+    
     void removeTask(int orderNo);
     
     void reorderTaskItem(TaskItem task, int index);

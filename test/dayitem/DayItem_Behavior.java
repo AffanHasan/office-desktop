@@ -42,10 +42,7 @@ public class DayItem_Behavior {
     
     @Test
     public void adding_a_task_item_at_index_3(){
-        for(int index = 0; index < 4; index++){
-            taskItem = new DefaultTaskItem();
-            dayItem.addTask(taskItem);
-        }
+        addTasks(4);
         int size = dayItem.getTasks().size();
         taskItem = new DefaultTaskItem();
         dayItem.addTask(taskItem, 3);
@@ -54,11 +51,7 @@ public class DayItem_Behavior {
     
     @Test
     public void adding_a_task_item_at_index_should_auto_assign_the_order_no_to_task_item(){
-        for(int index = 0; index < 4; index++){
-            taskItem = new DefaultTaskItem();
-            dayItem.addTask(taskItem);
-            assertTrue(dayItem.getTasks().get(index).getOrderNumber() == index);
-        }
+        addTasks(4);
         int size = dayItem.getTasks().size();
         taskItem = new DefaultTaskItem();
         dayItem.addTask(taskItem, 3);
@@ -69,7 +62,7 @@ public class DayItem_Behavior {
     }
     
     @Test
-    public void adding_a_task_item_at_invalid_index_should_through__exception(){
+    public void adding_a_task_item_at_higher_index_should_through_illegalargumentexception(){
         try{
             for(int index = 0; index < 4; index++){
                 taskItem = new DefaultTaskItem();
@@ -79,7 +72,7 @@ public class DayItem_Behavior {
             int size = dayItem.getTasks().size();
             taskItem = new DefaultTaskItem();
             dayItem.addTask(taskItem, 8);
-        }catch(Exception e){
+        }catch(IllegalArgumentException e){
             return ;
         }
         fail();
@@ -105,10 +98,21 @@ public class DayItem_Behavior {
     
     @Test
     public void remove_task_item_by_order_number_must_maintain_correct_ordering(){
-        dayItem.addTask(taskItem);
-        int size = dayItem.getTasks().size();
-        byte orderNo = 0;
-        dayItem.removeTask(orderNo);
+        addTasks(4);
+        dayItem.removeTask(3);
+        for(int i=0; i < 3; i++){
+            assertTrue(dayItem.getTasks().get(i).getOrderNumber() == i);
+        }
+    }
+    
+    @Test
+    public void remove_task_item_must_throw_illegalargumentexception_when_order_no_is_outofbound(){
+        addTasks(4);
+        try{
+            dayItem.removeTask(10);
+        }catch(IllegalArgumentException e){
+            return;
+        }
         fail();
     }
     
@@ -127,11 +131,7 @@ public class DayItem_Behavior {
     
     @Test
     public void reordering_a_task(){
-        for(int index = 0; index < 4; index++){
-            taskItem = new DefaultTaskItem();
-            dayItem.addTask(taskItem);
-            assertTrue(dayItem.getTasks().get(index).getOrderNumber() == index);
-        }
+        addTasks(4);
         taskItem = new DefaultTaskItem();
         String description = "reordering_a_task";
         taskItem.setDescription(description);
@@ -141,16 +141,30 @@ public class DayItem_Behavior {
     
     @Test
     public void reordering_a_task_must_maintain_correct_ordering(){
-        for(int index = 0; index < 4; index++){
-            taskItem = new DefaultTaskItem();
-            dayItem.addTask(taskItem);
-        }
-        taskItem = new DefaultTaskItem();
+        addTasks(4);
         String description = "reordering_a_task";
         taskItem.setDescription(description);
         dayItem.reorderTaskItem(taskItem, 0);
         for(int index = 0; index < 4; index++){
             assertTrue(dayItem.getTasks().get(index).getOrderNumber() == index);
+        }
+    }
+    
+    @Test
+    public void update_task(){
+        int index = 1;
+        String description = "Some Updates";
+        addTasks(4);
+        TaskItem task = dayItem.getTasks().get(index);
+        task.setDescription(description);
+        dayItem.replaceTask(task, index);
+        assertTrue(dayItem.getTasks().get(index).getDescription().equals(description));
+    }
+    
+    private void addTasks(int numberOfTasks){
+        for(int index = 0; index < numberOfTasks; index++){
+            taskItem = new DefaultTaskItem();
+            dayItem.addTask(taskItem);
         }
     }
 }

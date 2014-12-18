@@ -60,8 +60,28 @@ public class DefaultDayItem implements DayItem {
     
     @Override
     public void addTask(TaskItem task, int index) {
-        taskList.add(index, task);
-//      Reordering the order numbers
+        if(isValidIndex(index)){
+            taskList.add(index, task);
+//          Reordering the order numbers
+            reorderTasks();
+        }
+    }
+
+    @Override
+    public void removeTask(int orderNo) {
+        if(isValidIndex(orderNo)){
+            taskList.remove(orderNo);
+            reorderTasks();
+        }
+    }
+
+    @Override
+    public void reorderTaskItem(TaskItem task, int index) {
+        removeTask(task.getOrderNumber());
+        addTask(task, index);
+    }
+    
+    private void reorderTasks(){
         byte orderNo = 0;
         for(TaskItem item : taskList){
             item.setOrderNumber(orderNo++);
@@ -69,17 +89,22 @@ public class DefaultDayItem implements DayItem {
     }
 
     @Override
-    public void removeTask(int orderNo) {
-        if(orderNo >= 0)
-            taskList.remove(orderNo);
-        else
-            throw new IllegalArgumentException("orderNo must not be smaller than 0");
+    public void replaceTask(TaskItem task, int index) {
+        if(isValidIndex(index))
+            taskList.set(index, task);
     }
-
-    @Override
-    public void reorderTaskItem(TaskItem task, int index) {
-        removeTask(task.getOrderNumber());
-        addTask(task, index);
+    
+    private boolean isValidIndex(int indexNumber){
+        if(indexNumber < 0 ){
+            throw new IllegalArgumentException("orderNo must not be smaller than 0");
+        }
+        else if(indexNumber == 0){
+            return true;
+        }
+        else if(indexNumber > (taskList.size() - 1)){
+            throw new IllegalArgumentException("Provided order number is too high");
+        }
+        return true;
     }
     
 }
