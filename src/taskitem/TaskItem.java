@@ -5,6 +5,8 @@
  */
 package taskitem;
 
+import persistence.engine.PersistenceEngine;
+
 /**
  * Represents a TaskItem
  * @author Affan Hasan
@@ -15,9 +17,9 @@ public interface TaskItem {
     
     void setCategory(String category);
     
-    String getStatus();
+    PersistenceEngine.STATUS_LIST getStatus();
     
-    void setStatus(String status);
+    void setStatus(PersistenceEngine.STATUS_LIST status);
     
     String getDescription();
     
@@ -26,4 +28,6 @@ public interface TaskItem {
     int getOrderNumber();
     
     void setOrderNumber(int orderNo);
+    
+    String getTotalTime();
 }

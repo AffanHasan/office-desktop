@@ -18,14 +18,14 @@ public class DefaultTaskItem implements TaskItem {
     
     private String description = "";
     
-    private String status = "";
+    private PersistenceEngine.STATUS_LIST status = null;
     
     private int orderNumber;
     
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
 
     public DefaultTaskItem() {
-        this.status = pEngine.getDefaultStatusName();
+        this.status = PersistenceEngine.STATUS_LIST.PENDING;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class DefaultTaskItem implements TaskItem {
     }
 
     @Override
-    public String getStatus() {
+    public PersistenceEngine.STATUS_LIST getStatus() {
         return status;
     }
 
@@ -54,17 +54,6 @@ public class DefaultTaskItem implements TaskItem {
     }
 
     @Override
-    public void setStatus(String status) {
-        for(String statusString : FileBasedDataStore.getInstance().getStatusNames()){
-            if(statusString.equals(status)){
-                this.status = status;
-                return;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    @Override
     public int getOrderNumber() {
         return orderNumber;
     }
@@ -75,6 +64,24 @@ public class DefaultTaskItem implements TaskItem {
             throw new IllegalArgumentException("Order Number Must Not Be Negative");
         }
         this.orderNumber = orderNo;
+    }
+
+    @Override
+    public String getTotalTime() {
+        return getCalculatedTime();
+    }
+    
+    private String getCalculatedTime(){
+        return "0 minute(s)";
+    }
+
+    @Override
+    public void setStatus(PersistenceEngine.STATUS_LIST status) {
+        if(status != null)
+            this.status = status;
+        else{
+            throw  new IllegalArgumentException("Status cannot be null");
+        }
     }
     
 }

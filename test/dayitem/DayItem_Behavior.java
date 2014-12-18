@@ -41,6 +41,17 @@ public class DayItem_Behavior {
     }
     
     @Test
+    public void adding_a_task_item_at_index_value_smaller_than_0_must_throw_illegalargexception(){
+        try{
+            int size = dayItem.getTasks().size();
+            dayItem.addTask(taskItem, -1);
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        fail();
+    }
+    
+    @Test
     public void adding_a_task_item_at_index_3(){
         addTasks(4);
         int size = dayItem.getTasks().size();
@@ -159,6 +170,35 @@ public class DayItem_Behavior {
         task.setDescription(description);
         dayItem.replaceTask(task, index);
         assertTrue(dayItem.getTasks().get(index).getDescription().equals(description));
+    }
+    
+    @Test
+    public void update_task_at_higher_index_must_throw_illegalargumentexception(){
+        try{
+            int index = 1;
+            String description = "Some Updates";
+            addTasks(4);
+            TaskItem task = dayItem.getTasks().get(index);
+            task.setDescription(description);
+            dayItem.replaceTask(task, 100);
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        fail();
+    }
+    @Test
+    public void update_task_at_index_smalle_than_zero_must_throw_IllegalArgumentException(){
+        try{
+            int index = 1;
+            String description = "Some Updates";
+            addTasks(4);
+            TaskItem task = dayItem.getTasks().get(index);
+            task.setDescription(description);
+            dayItem.replaceTask(task, -3);
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        fail();
     }
     
     private void addTasks(int numberOfTasks){

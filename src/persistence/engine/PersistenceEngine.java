@@ -11,6 +11,24 @@ package persistence.engine;
  */
 public interface PersistenceEngine {
     
+    public enum STATUS_LIST{
+        
+        PENDING ("PENDING"),
+        IN_PROGRESS ("IN PROGRESS"),
+        DONE ("DONE"),
+        DISCARDED ("DISCARDED");
+        
+        private final String statusName;
+        
+        STATUS_LIST(String status){
+            this.statusName = status;
+        }
+        
+        String getStatusName(){
+            return this.statusName;
+        }
+    }
+    
     /**
      * 
      * @return The string name of default status

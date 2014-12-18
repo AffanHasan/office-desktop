@@ -16,24 +16,6 @@ public class FileBasedDataStore implements PersistenceEngine {
     private FileBasedDataStore(){
     }
     
-    private enum STATUS_LIST{
-        
-        PENDING ("PENDING"),
-        IN_PROGRESS ("IN PROGRESS"),
-        DONE ("DONE"),
-        DISCARDED ("DISCARDED");
-        
-        private final String statusName;
-        
-        STATUS_LIST(String status){
-            this.statusName = status;
-        }
-        
-        String getStatusName(){
-            return this.statusName;
-        }
-    }
-    
     @Override
     public String[] getStatusNames() {
         String[] list = new String[STATUS_LIST.values().length];

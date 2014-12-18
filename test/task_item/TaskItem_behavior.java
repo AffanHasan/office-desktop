@@ -27,7 +27,7 @@ public class TaskItem_behavior {
     private TaskItem taskItem;
     private final String category = "Personalized Menus";
     private final String description = "Some task";
-    private final String status = null;
+    private PersistenceEngine.STATUS_LIST status = null;
     
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
     
@@ -88,28 +88,6 @@ public class TaskItem_behavior {
     }
     
     @Test
-    public void must_throw_IllegalArgumentException_when_a_status_value_not_present_in_db_is_passed_as_status() {
-        try{
-          taskItem.setStatus("$%#@@##***");
-        }catch(IllegalArgumentException e){
-            return;
-        }
-        fail();
-    }
-    
-    @Test
-    public void must_accept_those_status_values_which_are_in_DB() {
-        for(String status : this.getStatusListFromDB()){
-            taskItem.setStatus(status);
-            assertEquals(taskItem.getStatus(), status);
-        }
-    }
-    
-    private String[] getStatusListFromDB(){
-        return pEngine.getStatusNames();
-    }
-    
-    @Test
     public void must_accept_a_byte_as_order_number(){
         byte number = 1;
         taskItem.setOrderNumber(number);
@@ -121,6 +99,27 @@ public class TaskItem_behavior {
         byte number = -1;
         try{
             taskItem.setOrderNumber(number);
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        fail();
+    }
+    
+    @Test
+    public void must_return_status_as_STATUS_LIST(){
+        assertTrue(taskItem.getStatus() instanceof PersistenceEngine.STATUS_LIST);
+    }
+    
+    @Test
+    public void must_accept_status_as_STATUS_LIST_value(){
+        taskItem.setStatus(PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+        assertEquals(taskItem.getStatus(), PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+    }
+    
+    @Test
+    public void must_throw_illegalArgsException_when_null_is_passed_as_status(){
+        try{
+            taskItem.setStatus(null);
         }catch(IllegalArgumentException e){
             return;
         }

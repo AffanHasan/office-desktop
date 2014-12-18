@@ -11,6 +11,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import persistence.engine.PersistenceEngine;
 import taskitem.DefaultTaskItem;
 import taskitem.TaskItem;
 
@@ -63,13 +64,19 @@ public class TaskItem_new_object {
     }
     
     @Test
-    public void task_item_must_return_PENDING_as_status_string() {
-        assertTrue(taskItem.getStatus().equals("PENDING"));
+    public void task_item_must_return_PENDING_as_status() {
+        assertEquals(taskItem.getStatus(), PersistenceEngine.STATUS_LIST.PENDING);
     }
     
     @Test
     public void must_have_an_order_number() {
         assertNotNull(taskItem.getOrderNumber());
+    }
+    
+    @Test
+    public void must_return_zero_minutes_as_total_processing_time(){
+        String time = "0 minute(s)";
+        assertEquals(taskItem.getTotalTime(), time);
     }
     
 }
