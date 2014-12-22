@@ -22,11 +22,37 @@ import java.util.logging.Logger;
  * @author root
  */
 class OfficeDesktop {
-    
+    static A a ;
     /**
      * @param args the command line arguments
      */
     public static void main(String... args){
+        a = new B();
+        a.m1();
+    }
+    
+    static class A{
+        A(){
+            System.out.println("Constructor A");
+            m1();
+        }
+        
+        void m1(){
+            System.out.println("A: m1 called");
+        }
+    }
+    
+    static class B extends A{
+        
+        B(){
+            System.out.println("Constructor B");
+            m1();
+        }
+
+        @Override
+        void m1() {
+            System.out.println("B: m1 called");
+        }
     }
     
 }

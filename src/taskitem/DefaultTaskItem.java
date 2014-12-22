@@ -28,7 +28,7 @@ public class DefaultTaskItem implements TaskItem {
     
     private String description = "";
     
-    private PersistenceEngine.STATUS_LIST status = null;
+//    private PersistenceEngine.STATUS_LIST status = null;
     
     private int orderNumber;
     
@@ -63,7 +63,7 @@ public class DefaultTaskItem implements TaskItem {
     }
     
     public DefaultTaskItem() {
-        this.status = PersistenceEngine.STATUS_LIST.PENDING;
+        addStatus(PersistenceEngine.STATUS_LIST.PENDING);
     }
     
     private StatusObject getDefaultStatusObject(){
@@ -77,7 +77,7 @@ public class DefaultTaskItem implements TaskItem {
 
     @Override
     public PersistenceEngine.STATUS_LIST getStatus() {
-        return status;
+        return statusLog.get(statusLog.size() - 1).getStatus();
     }
 
     @Override
@@ -145,16 +145,19 @@ public class DefaultTaskItem implements TaskItem {
         }
         return totalTime;
     }
-
-    @Override
-    public void setStatus(PersistenceEngine.STATUS_LIST status) {
+    
+    protected final void addStatus(PersistenceEngine.STATUS_LIST status){
         if(status != null){
-            this.status = status;
             this.statusLog.add(new StatusObject(status));
         }
         else{
-            throw  new IllegalArgumentException("Status cannot be null");
+            throw new IllegalArgumentException("Status cannot be null");
         }
+    }
+
+    @Override
+    public void setStatus(PersistenceEngine.STATUS_LIST status) {
+        addStatus(status);
     }
     
 }
