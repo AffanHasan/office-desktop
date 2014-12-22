@@ -5,8 +5,14 @@
  */
 package task_item;
 
+import java.sql.Time;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -124,6 +130,21 @@ public class TaskItem_behavior {
             return;
         }
         fail();
+    }
+    
+    @Test
+    public void status_changing_status_must_record_time_stamp(){
+        try {
+//          Wait for random time intervals
+            for(long i = 1; i < 10; i++){
+                taskItem.setStatus(PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+                Thread.sleep(i * 1000);
+                taskItem.setStatus(PersistenceEngine.STATUS_LIST.DONE);
+                assertTrue(taskItem.getTotalTime().equals(i + " second(s)"));
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TaskItem_behavior.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

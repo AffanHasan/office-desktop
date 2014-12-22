@@ -74,9 +74,8 @@ public class TaskItem_new_object {
     }
     
     @Test
-    public void must_return_zero_minutes_as_total_processing_time(){
-        String time = "0 minute(s)";
+    public void must_return_zero_seconds_as_total_processing_time(){
+        String time = "0 second(s)";
         assertEquals(taskItem.getTotalTime(), time);
     }
-    
 }

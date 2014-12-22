@@ -5,6 +5,16 @@
  */
 package taskitem;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.xml.datatype.DatatypeConstants;
 import persistence.engine.FileBasedDataStore;
 import persistence.engine.PersistenceEngine;
 
@@ -23,9 +33,41 @@ public class DefaultTaskItem implements TaskItem {
     private int orderNumber;
     
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
+    
+    private final List<StatusObject> statusLog = new ArrayList<>();
+    
+    private class StatusObject{
+        
+        private final PersistenceEngine.STATUS_LIST status;
+        
+        private final Instant timeStamp;
 
+        public StatusObject() {
+            this.status = PersistenceEngine.STATUS_LIST.PENDING;
+            this.timeStamp = Instant.now();
+        }
+        
+        public StatusObject(PersistenceEngine.STATUS_LIST status) {
+            this.status = status;
+            this.timeStamp = Instant.now();
+        }
+
+        public Instant getTimeStamp() {
+            return timeStamp;
+        }
+        
+        public PersistenceEngine.STATUS_LIST getStatus(){
+            return this.status;
+        }
+        
+    }
+    
     public DefaultTaskItem() {
         this.status = PersistenceEngine.STATUS_LIST.PENDING;
+    }
+    
+    private StatusObject getDefaultStatusObject(){
+        return new StatusObject();
     }
 
     @Override
@@ -68,17 +110,48 @@ public class DefaultTaskItem implements TaskItem {
 
     @Override
     public String getTotalTime() {
-        return getCalculatedTime();
+        return getDuration();
     }
     
-    private String getCalculatedTime(){
-        return "0 minute(s)";
+    private String getDuration(){
+        Duration dur = extractTotalDuration();
+        final String duration;
+        if(dur.toHours() > 0){//If one or more hours
+            duration = String.valueOf(dur.toHours()) + " hour(s)";
+        }else if(dur.toMinutes() > 0){//If one or more minutes
+            duration = String.valueOf(dur.toMinutes()) + " minute(s)";
+        }else if(dur.getSeconds() > 0){//If one or more seconds
+            duration = String.valueOf(dur.getSeconds()) + " second(s)";
+        }else{//default
+            duration = "0 second(s)";
+        }
+        return duration;
+    }
+    
+    private Duration extractTotalDuration(){
+        Duration totalTime = Duration.ZERO;
+        Instant t1 = null;
+        Instant t2 = null;
+        boolean ip = false;
+        for(StatusObject obj : statusLog ){
+            if(obj.getStatus() == PersistenceEngine.STATUS_LIST.IN_PROGRESS){
+                t1 = obj.getTimeStamp();
+                ip = true;
+            }else if(ip){
+                t2 = obj.getTimeStamp();
+                totalTime = Duration.between(t1, t2);
+                ip = false;
+            }
+        }
+        return totalTime;
     }
 
     @Override
     public void setStatus(PersistenceEngine.STATUS_LIST status) {
-        if(status != null)
+        if(status != null){
             this.status = status;
+            this.statusLog.add(new StatusObject(status));
+        }
         else{
             throw  new IllegalArgumentException("Status cannot be null");
         }

@@ -32,5 +32,9 @@ public interface DayItem {
     
     void removeTask(int orderNo);
     
+    /**
+     * Here the index is the task item order number
+     * @param index 
+     */
     void reorderTaskItem(TaskItem task, int index);
 }
