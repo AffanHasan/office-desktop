@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mocked;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -133,18 +136,28 @@ public class TaskItem_behavior {
     }
     
     @Test
-    public void status_changing_status_must_record_time_stamp(){
-        try {
-//          Wait for random time intervals
+    public void status_changing_status_must_record_time_stamp(@Mocked("now") Instant instant){
+        Instant base =  Instant.parse("2007-12-03T10:15:30.00Z");
+//      Wait for random time intervals
             for(long i = 1; i < 10; i++){
+                
+                new Expectations(){
+                    {
+                        Instant.now();
+                        result = base;
+                    }
+                };
                 taskItem.setStatus(PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                Thread.sleep(i * 1000);
+                final long counter = i;
+                new Expectations(){
+                    {
+                        Instant.now();
+                        result = base.plusSeconds(counter);
+                    }
+                };
                 taskItem.setStatus(PersistenceEngine.STATUS_LIST.DONE);
                 assertTrue(taskItem.getTotalTime().equals(i + " second(s)"));
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TaskItem_behavior.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
 }
