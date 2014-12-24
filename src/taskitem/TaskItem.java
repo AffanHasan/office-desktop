@@ -5,6 +5,7 @@
  */
 package taskitem;
 
+import java.time.Instant;
 import persistence.engine.PersistenceEngine;
 
 /**
@@ -30,4 +31,11 @@ public interface TaskItem {
     void setOrderNumber(int orderNo);
     
     String getTotalTime();
+    
+    /**
+     * Time Instant on which this task item is last modified
+     * @return 
+     */
+    Instant getLastModifiedInstant();
+    
 }

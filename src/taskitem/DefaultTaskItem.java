@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +37,11 @@ public class DefaultTaskItem implements TaskItem {
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
     
     private final List<StatusObject> statusLog = new ArrayList<>();
+
+    @Override
+    public Instant getLastModifiedInstant() {
+        return this.statusLog.get(this.statusLog.size() - 1).getTimeStamp();
+    }
     
     private class StatusObject{
         
@@ -118,9 +124,21 @@ public class DefaultTaskItem implements TaskItem {
         Duration dur = extractTotalDuration();
         final String duration;
         if(dur.toHours() > 0){//If one or more hours
-            duration = String.valueOf(dur.toHours()) + " hour(s)";
+            if(dur.minus(dur.toHours(), ChronoUnit.HOURS).toMinutes() > 0){
+                long minutes = dur.minus(dur.toHours(), ChronoUnit.HOURS).toMinutes();
+                duration = String.valueOf(dur.toHours()) + " hour(s)" 
+                            + " " +String.valueOf(minutes) + " minute(s)";
+            }else{
+                duration = String.valueOf(dur.toHours()) + " hour(s)";
+            }
         }else if(dur.toMinutes() > 0){//If one or more minutes
-            duration = String.valueOf(dur.toMinutes()) + " minute(s)";
+            if(dur.minus(dur.toMinutes(), ChronoUnit.MINUTES).getSeconds() > 0){
+                long seconds = dur.minus(dur.toMinutes(), ChronoUnit.MINUTES).getSeconds();
+                duration = String.valueOf(dur.toMinutes()) + " minute(s)" 
+                            + " " +String.valueOf(seconds) + " second(s)";
+            }else{
+                duration = String.valueOf(dur.toMinutes()) + " minute(s)";
+            }
         }else if(dur.getSeconds() > 0){//If one or more seconds
             duration = String.valueOf(dur.getSeconds()) + " second(s)";
         }else{//default
@@ -135,12 +153,13 @@ public class DefaultTaskItem implements TaskItem {
         Instant t2 = null;
         boolean ip = false;
         for(StatusObject obj : statusLog ){
+            
             if(obj.getStatus() == PersistenceEngine.STATUS_LIST.IN_PROGRESS){
                 t1 = obj.getTimeStamp();
                 ip = true;
             }else if(ip){
                 t2 = obj.getTimeStamp();
-                totalTime = Duration.between(t1, t2);
+                totalTime = totalTime.plus(Duration.between(t1, t2));
                 ip = false;
             }
         }

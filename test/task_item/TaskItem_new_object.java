@@ -5,6 +5,7 @@
  */
 package task_item;
 
+import java.time.Instant;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -21,6 +22,10 @@ import taskitem.TaskItem;
  * @author Affan Hasan
  */
 public class TaskItem_new_object {
+    
+    public static final String hours = " hour(s)";
+    public static final String minutes = " minute(s)";
+    public static final String seconds = " second(s)";
     
     private TaskItem taskItem = new DefaultTaskItem();
     
@@ -75,7 +80,17 @@ public class TaskItem_new_object {
     
     @Test
     public void must_return_zero_seconds_as_total_processing_time(){
-        String time = "0 second(s)";
-        assertEquals(taskItem.getTotalTime(), time);
+        assertEquals(taskItem.getTotalTime(), 0 + seconds);
     }
+    
+    @Test
+    public void get_last_modified_instant(){
+        assertTrue(taskItem.getLastModifiedInstant() instanceof Instant);
+    }
+    
+    @Test
+    public void get_last_modified_instant_not_null(){
+        assertNotNull(taskItem.getLastModifiedInstant());
+    }
+    
 }
