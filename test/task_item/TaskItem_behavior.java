@@ -139,100 +139,98 @@ public class TaskItem_behavior {
         fail();
     }
     
+    private void testForRangeOfTimeIntervals(ChronoUnit timeUnit, long start, long end){
+        if(start <= 0)
+            throw new IllegalArgumentException("start must be greater than 0");
+
+
+//              Test for random time intervals
+            for(; start <= end; start++){
+                taskItem = new DefaultTaskItem();
+                if(timeUnit == ChronoUnit.HOURS){
+                    changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+//                          Check for time interval where time interval equals 'start' number of hours
+                    changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
+                    assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.hours);
+
+                    final long hour = start;
+                    long minutes = 1;
+//                            Check for hour transition ex: 1 hour 1 minute to 1 hour 59 minutes
+                    for(; minutes <= 59; minutes++){
+                        changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+                        changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.PENDING);
+                        assertEquals(taskItem.getTotalTime()
+                                ,start + TaskItem_new_object.hours + " " + minutes + TaskItem_new_object.minutes);
+                    }
+                } else if(timeUnit == ChronoUnit.MINUTES){
+//                          Check for time interval where time interval equals 'start' number of minutes
+                    changeStatus(timeUnit, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+                    changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
+                    assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.minutes);
+
+                    final long minute = start;
+                    long seconds = 1;
+//                            Check for minute transition ex: 1 minute 1 second to 1 minute 59 seconds
+                    for(; seconds <= 59; seconds++){
+                        changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+                        changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.PENDING);
+                        assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.minutes + " " + seconds + TaskItem_new_object.seconds);
+                    }
+                } else if(timeUnit == ChronoUnit.SECONDS){
+                    changeStatus(timeUnit, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+                    changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
+                    assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.seconds);
+                }
+            }
+    }
+    
+    private void changeStatus(ChronoUnit timeUnit, long interval, PersistenceEngine.STATUS_LIST status){
+
+//              Mocking the time interval
+        new Expectations(){
+            {
+                Instant.now();
+//                      Adding the fake time interval
+                result = taskItem.getLastModifiedInstant().plus(interval, timeUnit);
+            }
+        };
+//              Setting status
+        taskItem.setStatus(status);
+    }
     
     @Test
-    public void changing_status_with_random_time_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
+    public void changing_status_with_random_hourly_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
         
-        final class TimeMachine{
-
-                TimeMachine(){
-    //              Check from 1 to 24 hours
-                    testForRangeOfTimeIntervals(ChronoUnit.HOURS,1, 24);
-    //              Check from 1 to 59 minutes
-                    testForRangeOfTimeIntervals(ChronoUnit.MINUTES,1 , 59);
-                    testFor60MinutesInterval();
-    //              Check from 1 to 59 seconds
-                    testForRangeOfTimeIntervals(ChronoUnit.SECONDS,1 , 59);
-                    testFor60SecondsInterval();
-                }
-
-
-                void testFor60MinutesInterval(){
-                    taskItem = new DefaultTaskItem();
-                    changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                    changeStatus(ChronoUnit.MINUTES, 60, PersistenceEngine.STATUS_LIST.PENDING);
-                    assertTrue(taskItem.getTotalTime().equals(1 + TaskItem_new_object.hours));
-                }
-
-                void testFor60SecondsInterval(){
-                    taskItem = new DefaultTaskItem();
-                    changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                    changeStatus(ChronoUnit.SECONDS, 60, PersistenceEngine.STATUS_LIST.PENDING);
-                    assertTrue(taskItem.getTotalTime().equals(1 + TaskItem_new_object.minutes));
-                }
-
-                private void testForRangeOfTimeIntervals(ChronoUnit timeUnit, long start, long end){
-                    if(start <= 0)
-                        throw new IllegalArgumentException("start must be greater than 0");
-
-
-    //              Test for random time intervals
-                        for(; start <= end; start++){
-                            taskItem = new DefaultTaskItem();
-                            if(timeUnit == ChronoUnit.HOURS){
-                                changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-    //                          Check for time interval where time interval equals 'start' number of hours
-                                changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
-                                assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.hours);
-
-                                final long hour = start;
-                                long minutes = 1;
-    //                            Check for hour transition ex: 1 hour 1 minute to 1 hour 59 minutes
-                                for(; minutes <= 59; minutes++){
-                                    changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                                    changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.PENDING);
-                                    assertEquals(taskItem.getTotalTime()
-                                            ,start + TaskItem_new_object.hours + " " + minutes + TaskItem_new_object.minutes);
-                                }
-                            } else if(timeUnit == ChronoUnit.MINUTES){
-    //                          Check for time interval where time interval equals 'start' number of minutes
-                                changeStatus(timeUnit, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                                changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
-                                assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.minutes);
-
-                                final long minute = start;
-                                long seconds = 1;
-    //                            Check for minute transition ex: 1 minute 1 second to 1 minute 59 seconds
-                                for(; seconds <= 59; seconds++){
-                                    changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                                    changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.PENDING);
-                                    assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.minutes + " " + seconds + TaskItem_new_object.seconds);
-                                }
-                            } else if(timeUnit == ChronoUnit.SECONDS){
-                                changeStatus(timeUnit, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-                                changeStatus(timeUnit, start, PersistenceEngine.STATUS_LIST.PENDING);
-                                assertEquals(taskItem.getTotalTime(), start + TaskItem_new_object.seconds);
-                            }
-                        }
-                }
-
-                private void changeStatus(ChronoUnit timeUnit, long interval, PersistenceEngine.STATUS_LIST status){
-
-    //              Mocking the time interval
-                    new Expectations(){
-                        {
-                            Instant.now();
-    //                      Adding the fake time interval
-                            result = taskItem.getLastModifiedInstant().plus(interval, timeUnit);
-                        }
-                    };
-    //              Setting status
-                    taskItem.setStatus(status);
-                }
-        }
+//      Check from 1 to 24 hours
+        testForRangeOfTimeIntervals(ChronoUnit.HOURS,1, 24);
+    }
+    
+    @Test
+    public void changing_status_with_random_minute_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
         
-//      Test for changing status with random time intervals
-        new TimeMachine();
+//      Check from 1 to 59 minutes
+        testForRangeOfTimeIntervals(ChronoUnit.MINUTES,1 , 59);
+    }
+    
+    @Test
+    public void test_for_60_minutes_interval(@Mocked("now") Instant instant){
+        changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+        changeStatus(ChronoUnit.MINUTES, 60, PersistenceEngine.STATUS_LIST.PENDING);
+        assertTrue(taskItem.getTotalTime().equals(1 + TaskItem_new_object.hours));
+    }
+    
+    @Test
+    public void changing_status_with_random_seconds_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
+        
+//            Check from 1 to 59 seconds
+        testForRangeOfTimeIntervals(ChronoUnit.SECONDS,1 , 59);
+    }
+    
+    @Test
+    public void test_for60_seconds_interval(@Mocked("now") Instant instant){
+        changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
+        changeStatus(ChronoUnit.SECONDS, 60, PersistenceEngine.STATUS_LIST.PENDING);
+        assertTrue(taskItem.getTotalTime().equals(1 + TaskItem_new_object.minutes));
     }
     
 }
