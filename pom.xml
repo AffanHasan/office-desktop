@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<name>office-desktop</name>
+	
+	<description/>
+
+	<groupId>office-desktop</groupId>
+	<artifactId>office-dekstop</artifactId>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<packaging>pom</packaging>
+
+	<version>1.0-SNAPSHOT</version>	
+ 
+  <modules>
+    <module>tasktracker</module>
+    <module>tasktrackerSpecs</module>
+  </modules>
+</project>
