@@ -32,15 +32,15 @@ import taskitem.TaskItem;
 
 /**
  *
- * @author Affan Hasan
+ * @author root
  */
 public class TaskItem_behavior {
     
     private TaskItem taskItem;
     private final String category = "Personalized Menus";
     private final String description = "Some task";
-//    private PersistenceEngine.STATUS_LIST status = null;
-//    private final Instant base =  Instant.parse("2007-12-03T10:15:30.00Z");
+    private PersistenceEngine.STATUS_LIST status = null;
+    private final Instant base =  Instant.parse("2007-12-03T10:15:30.00Z");
     
     private final PersistenceEngine pEngine = FileBasedDataStore.getInstance();
     
@@ -200,12 +200,14 @@ public class TaskItem_behavior {
     
     @Test
     public void changing_status_with_random_hourly_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
+        
 //      Check from 1 to 24 hours
         testForRangeOfTimeIntervals(ChronoUnit.HOURS,1, 24);
     }
     
     @Test
     public void changing_status_with_random_minute_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
+        
 //      Check from 1 to 59 minutes
         testForRangeOfTimeIntervals(ChronoUnit.MINUTES,1 , 59);
     }
@@ -218,40 +220,17 @@ public class TaskItem_behavior {
     }
     
     @Test
-    public void test_for_random_but_greater_than_60_minutes_intervals(@Mocked("now") Instant instant){
-//        Test for upto 119 minutes
-        for(int i = 61; i <= 119; i++){
-            taskItem = new DefaultTaskItem();
-            changeStatus(ChronoUnit.MINUTES, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-            changeStatus(ChronoUnit.MINUTES, i, PersistenceEngine.STATUS_LIST.PENDING);
-            assertEquals(taskItem.getTotalTime(), (i / 60) + TaskItem_new_object.hours + " " + (i % 60) + TaskItem_new_object.minutes );
-        }
-    }
-    
-    @Test
     public void changing_status_with_random_seconds_intervals_should_calculate_total_time_correctly(@Mocked("now") Instant instant){
-//      Check from 1 to 59 seconds
+        
+//            Check from 1 to 59 seconds
         testForRangeOfTimeIntervals(ChronoUnit.SECONDS,1 , 59);
     }
-    
     
     @Test
     public void test_for60_seconds_interval(@Mocked("now") Instant instant){
         changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
         changeStatus(ChronoUnit.SECONDS, 60, PersistenceEngine.STATUS_LIST.PENDING);
         assertTrue(taskItem.getTotalTime().equals(1 + TaskItem_new_object.minutes));
-    }
-    
-    @Test
-    public void test_for_random_but_greater_than_60_seconds_intervals(@Mocked("now") Instant instant){
-//        Test for upto 119 seconds
-        for(int i = 61; i <= 119; i++){
-            taskItem = new DefaultTaskItem();
-            changeStatus(ChronoUnit.SECONDS, 1, PersistenceEngine.STATUS_LIST.IN_PROGRESS);
-            changeStatus(ChronoUnit.SECONDS, i, PersistenceEngine.STATUS_LIST.PENDING);
-//            System.out.println(taskItem.getTotalTime());
-            assertEquals(taskItem.getTotalTime(), (i / 60) + TaskItem_new_object.minutes + " " + (i % 60) + TaskItem_new_object.seconds );
-        }
     }
     
 }
